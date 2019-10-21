@@ -347,6 +347,7 @@ def new_socket_connection(addr: Tuple[str, int]) -> socket.socket:
         if ip.version == 4:
             conn = socket.socket(
                 socket.AF_INET, socket.SOCK_STREAM, 0)
+            conn.bind((DEFAULT_IPV4_HOSTNAME,0))
             conn.connect(addr)
         else:
             conn = socket.socket(
@@ -3178,7 +3179,8 @@ def main(input_args: List[str]) -> None:
             devtools_event_queue = multiprocessing.Manager().Queue()
         if args.pac_file is not None:
             default_plugins += 'proxy.HttpWebServerPacFilePlugin,'
-
+        if args.hostname:
+            DEFAULT_IPV4_HOSTNAME = ipaddress.ip_address(args.hostname)
         config = ProtocolConfig(
             auth_code=auth_code,
             server_recvbuf_size=args.server_recvbuf_size,
